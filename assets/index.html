@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';"/>
+  <link rel="stylesheet" href="main.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100&display=swap" rel="stylesheet">
+  <title>Idleon Steam Data Extractor</title>
+</head>
+<body>
+<header>
+  <div class="app-name">
+    <img src="data-flow.png" alt=""/>
+    <span>Idleon Steam Data Extractor</span>
+  </div>
+  <span id='close-window'>X</span>
+</header>
+<section>
+  <div class="info">
+    This app will generate your account's JSON to be used in <a id="idleon-toolbox" target="_blank" href="#">idleon-toolbox</a>
+    <br/>
+    <br/>
+    In order to avoid working on the real DB, it will be copied to a chosen location.
+  </div>
+  <div class="title"><span>Idleon DB Path</span> <img id="reset-source" src="redo.png"/></div>
+  <input id="source-path-preview" type="text" readonly disabled/>
+  <div class="checkbox">
+    <input id="custom-source-path" type="checkbox"/>
+    <label for="custom-source-path">Custom Path</label>
+    <button id="custom-source-folder-path">Select Custom Path</button>
+  </div>
+  <div class="title"><span>Target DB Path</span> <img id="reset-target" src="redo.png"/></div>
+  <input id="target-path-preview" type="text" readonly disabled/>
+  <div class="checkbox">
+    <input id="custom-target-path" type="checkbox"/>
+    <label for="custom-target-path">Custom Path</label>
+    <button id="custom-target-folder-path">Select Custom Path</button>
+  </div>
+  <div class="run">
+    <button id="run-button">Run</button>
+  </div>
+  <div id="result">
+    <button id="copy-to-clipboard">Copy</button>
+    <textarea id="json"></textarea>
+  </div>
+  <img id="check-icon" src="check1.png" height="24" width="24" alt=""/>
+</section>
+</body>
+</html>

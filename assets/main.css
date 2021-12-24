@@ -1,0 +1,121 @@
+html {
+  -webkit-app-region: no-drag;
+  background: #222831;
+  color: #fdfdff;
+  height: 100%;
+  font-size: 16px;
+  box-sizing: border-box;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  height: calc(100% - 31px);
+}
+
+header {
+  -webkit-app-region: drag;
+  background: #393e46;
+  padding: 5px 10px 5px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header .app-name {
+  display: flex;
+  align-items: center;
+}
+
+header .app-name img {
+  margin-right: 15px;
+  width: 24px;
+  height: 24px;
+}
+
+header .app-name span {
+  font-weight: bold;
+}
+
+#close-window {
+  -webkit-app-region: no-drag;
+  cursor: pointer;
+}
+
+section,
+footer {
+  padding: 0 30px 0px 30px;
+}
+
+section .run {
+  margin: 20px 0;
+}
+
+#source-path-preview,
+#target-path-preview {
+  width: 70%;
+}
+
+#source-path-preview:disabled,
+#target-path-preview:disabled {
+  color: black;
+}
+
+#custom-source-folder-path,
+#custom-target-folder-path {
+  display: none;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+#reset-source,
+#reset-target {
+  cursor: pointer;
+}
+
+.checkbox,
+.target-checkbox {
+  display: flex;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.title {
+  margin-top: 15px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#result {
+  display: none;
+  position: relative;
+  width: max-content;
+}
+
+#result #copy-to-clipboard {
+  position: absolute;
+  right: 0;
+}
+
+#result textarea {
+  /*padding: 20px 5px 5px 5px;*/
+  resize: none;
+  height: 20px;
+  width: 400px;
+}
+
+.info {
+  margin: 20px 0;
+}
+
+a {
+  color: white;
+  cursor: pointer;
+}
+
+#check-icon {
+  display: none;
+}

@@ -1,0 +1,29 @@
+{
+  "name": "idleon-steam-data-extractor",
+  "version": "1.0.0",
+  "description": "An app to extract idleon data from steam",
+  "main": "index.js",
+  "productName": "idleon-steam-data-extractor",
+  "scripts": {
+    "start": "electron index.js",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder --win=portable",
+    "dist-linux": "electron-builder --linux=AppImage"
+  },
+  "keywords": [],
+  "author": "Morojo",
+  "license": "ISC",
+  "dependencies": {
+    "electron-log": "^4.4.1",
+    "level": "^7.0.1",
+    "lodash": "^4.17.21"
+  },
+  "build": {
+    "artifactName": "idleon-steam-data-extractor.exe"
+  },
+  "devDependencies": {
+    "electron": "^15.3.0",
+    "electron-builder": "^22.13.1"
+  },
+  "postinstall": "electron-builder install-app-deps"
+}
