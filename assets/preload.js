@@ -1,4 +1,5 @@
 const { ipcRenderer, clipboard, shell } = require('electron');
+const { format } = require("date-fns");
 
 window.addEventListener('DOMContentLoaded', () => {
   const closeWindow = document.getElementById('close-window');
@@ -59,13 +60,22 @@ window.addEventListener('DOMContentLoaded', () => {
   const result = document.getElementById('result');
   const json = document.getElementById('json');
   const checkIcon = document.getElementById('check-icon');
+  const currentUpdateTime = document.getElementById('current-update-time');
 
   runButton?.addEventListener('click', async () => {
     const string = await ipcRenderer.invoke('run-process');
+    const hexHash = await digestMessage(JSON.stringify(string));
+    const lastHash = getLocalStorageItem('hash');
+    const lastUpdate = getLocalStorageItem('lastUpdate');
     if (string) {
       json.innerHTML = JSON.stringify(string);
       result.style.display = 'inline-block';
       checkIcon.style.display = 'inline-block'
+      currentUpdateTime.innerHTML = hexHash !== lastHash ? 'Updated' : `Old Data - Last Update Date: ${formatDate(lastUpdate)}`;
+      if (hexHash !== lastHash) {
+        setLocalStorageItem('hash', hexHash);
+        setLocalStorageItem('lastUpdate', new Date().getTime());
+      }
       setTimeout(() => {
         checkIcon.style.display = 'none';
       }, 3000)
@@ -80,9 +90,26 @@ window.addEventListener('DOMContentLoaded', () => {
   const idleonToolbox = document.getElementById('idleon-toolbox');
   idleonToolbox?.addEventListener('click', (e) => {
     e.preventDefault();
-    shell.openExternal("https://morta1.github.io/IdleonToolbox/family")
+    shell.openExternal("https://morta1.github.io/IdleonToolbox")
   })
 })
+
+const digestMessage = async (message) => {
+  const msgUint8 = new TextEncoder().encode(message);                           // encode as (utf-8) Uint8Array
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);           // hash the message
+  const hashArray = Array.from(new Uint8Array(hashBuffer));                     // convert buffer to byte array
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
+  console.log(hashHex);
+  return hashHex;
+}
+
+const getTimePassed = (ms) => {
+  return new Date().getTime() - ms;
+}
+
+const formatDate = (ms) => {
+  return format(new Date(ms), 'dd/MM/yyyy HH:mm:ss');
+}
 
 const getLocalStorageItem = (item) => {
   try {

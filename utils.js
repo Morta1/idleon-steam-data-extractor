@@ -106,6 +106,7 @@ const characterKeys = {
   Exp0: true,
   ExpReq0: true,
   PostOfficeInfo: true,
+  KillsLeft2Advance: true
 }
 
 const filterObjectKeys = (object) => {
