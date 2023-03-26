@@ -8,7 +8,7 @@
 
 > An app to extract idleon data from steam.
 > 
-> This app is deserializing stencyl.js output to a json format
+> This app is deserializing [stencyl](https://www.stencyl.com) output to a json format
 
 ## Install
 
