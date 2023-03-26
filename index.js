@@ -11,11 +11,11 @@ const defaultPath = `${process.env.APPDATA}\\legends-of-idleon\\Local Storage\\l
 const defaultTargetPath = "c:/dev/idleon-level-db";
 let sourceFolderPath = defaultPath;
 let targetFolderPath = defaultTargetPath;
-
+let win;
 const createWindow = () => {
-  let win = new BrowserWindow({
+  win = new BrowserWindow({
     width: 650,
-    height: 500,
+    height: 550,
     frame: false,
     icon: 'build/data-flow.png',
     webPreferences: {
@@ -51,6 +51,11 @@ ipcMain.handle('close-app', () => {
   app.quit();
 });
 
+ipcMain.handle('minimize-app', () => {
+  win.minimize()
+  // or depending you could do: win.hide()
+})
+
 ipcMain.handle('open-folder', async (e, folderType) => {
   const folder = await dialog.showOpenDialog({ properties: ['openDirectory'] });
   if (folderType === 'source') {
@@ -68,8 +73,7 @@ ipcMain.handle('run-process', async () => {
     if (!copied) return null;
     const dataAsArray = await createReadStream(targetFolderPath, {});
     if (dataAsArray.length) {
-      const userData = await getUserData(dataAsArray);
-      return userData;
+      return await getUserData(dataAsArray);
     } else {
       return null;
     }
@@ -77,6 +81,10 @@ ipcMain.handle('run-process', async () => {
     log.error('Error has occurred in run-process()', err);
     return null;
   }
+});
+
+ipcMain.handle('show-dialog', (event, dialogOptions) => {
+  return dialog.showMessageBox(win, dialogOptions);
 });
 
 const copyFolder = () => {

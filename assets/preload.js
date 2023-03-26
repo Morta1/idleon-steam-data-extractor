@@ -3,9 +3,13 @@ const { format } = require("date-fns");
 
 window.addEventListener('DOMContentLoaded', () => {
   const closeWindow = document.getElementById('close-window');
+  const minimizeWindow = document.getElementById('minimize-window');
   let defaultSourcePath, defaultTargetPath;
   closeWindow?.addEventListener('click', () => {
     ipcRenderer.invoke('close-app');
+  });
+  minimizeWindow?.addEventListener('click', () => {
+    ipcRenderer.invoke('minimize-app');
   });
 
   const sourcePathPreview = document.getElementById('source-path-preview');
@@ -63,22 +67,30 @@ window.addEventListener('DOMContentLoaded', () => {
   const currentUpdateTime = document.getElementById('current-update-time');
 
   runButton?.addEventListener('click', async () => {
-    const string = await ipcRenderer.invoke('run-process');
-    const hexHash = await digestMessage(JSON.stringify(string));
-    const lastHash = getLocalStorageItem('hash');
-    const lastUpdate = getLocalStorageItem('lastUpdate');
-    if (string) {
-      json.innerHTML = JSON.stringify(string);
-      result.style.display = 'inline-block';
-      checkIcon.style.display = 'inline-block'
-      currentUpdateTime.innerHTML = hexHash !== lastHash ? 'Updated' : `Old Data - Last Update Date: ${formatDate(lastUpdate)}`;
-      if (hexHash !== lastHash) {
-        setLocalStorageItem('hash', hexHash);
-        setLocalStorageItem('lastUpdate', new Date().getTime());
+    const { response } = await ipcRenderer.invoke('show-dialog', {
+      type: 'warning',
+      message: `Target folder (${targetPathPreview.value}) content will be overwritten, are you sure you want to proceed?`,
+      buttons: ['Yes', 'No'],
+      title: 'Idleon Steam Data Extractor'
+    });
+    if (response === 0) {
+      const string = await ipcRenderer.invoke('run-process');
+      const hexHash = await digestMessage(JSON.stringify(string));
+      const lastHash = getLocalStorageItem('hash');
+      const lastUpdate = getLocalStorageItem('lastUpdate');
+      if (string) {
+        json.innerHTML = JSON.stringify(string);
+        result.style.display = 'inline-block';
+        checkIcon.style.display = 'inline-block'
+        currentUpdateTime.innerHTML = hexHash !== lastHash ? 'Updated' : `Old Data - Last Update Date: ${formatDate(lastUpdate)}`;
+        if (hexHash !== lastHash) {
+          setLocalStorageItem('hash', hexHash);
+          setLocalStorageItem('lastUpdate', new Date().getTime());
+        }
+        setTimeout(() => {
+          checkIcon.style.display = 'none';
+        }, 3000)
       }
-      setTimeout(() => {
-        checkIcon.style.display = 'none';
-      }, 3000)
     }
   });
 
@@ -90,7 +102,13 @@ window.addEventListener('DOMContentLoaded', () => {
   const idleonToolbox = document.getElementById('idleon-toolbox');
   idleonToolbox?.addEventListener('click', (e) => {
     e.preventDefault();
-    shell.openExternal("https://morta1.github.io/IdleonToolbox")
+    shell.openExternal("https://idleontoolbox.com")
+  })
+
+  const idleonToolboxRepository = document.getElementById('idleon-toolbox-repository');
+  idleonToolboxRepository?.addEventListener('click', (e) => {
+    e.preventDefault();
+    shell.openExternal("https://github.com/Morta1/idleon-steam-data-extractor")
   })
 })
 
@@ -101,10 +119,6 @@ const digestMessage = async (message) => {
   const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
   console.log(hashHex);
   return hashHex;
-}
-
-const getTimePassed = (ms) => {
-  return new Date().getTime() - ms;
 }
 
 const formatDate = (ms) => {

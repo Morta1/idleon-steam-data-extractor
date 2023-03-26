@@ -38,7 +38,18 @@ header .app-name span {
   font-weight: bold;
 }
 
+.tools {
+  display: flex;
+  margin-left: auto;
+  gap: 10px;
+}
+
 #close-window {
+  -webkit-app-region: no-drag;
+  cursor: pointer;
+}
+
+#minimize-window {
   -webkit-app-region: no-drag;
   cursor: pointer;
 }
@@ -113,6 +124,7 @@ section .run {
 
 .info {
   margin: 20px 0;
+  font-size: 14px;
 }
 
 a {

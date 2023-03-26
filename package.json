@@ -7,11 +7,10 @@
   "scripts": {
     "start": "electron index.js",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder --win=portable",
-    "dist-linux": "electron-builder --linux=AppImage"
+    "dist": "electron-builder --win=portable"
   },
   "keywords": [],
-  "author": "Morojo",
+  "author": "Morta1",
   "license": "ISC",
   "dependencies": {
     "date-fns": "^2.28.0",
