@@ -6,7 +6,7 @@
   </a>
 </p>
 
-> An app to extract idleon data from steam.
+> An app to extract [Legends Of Idleon](https://legendsofidleon.com) data from steam.
 > 
 > This app is deserializing [stencyl](https://www.stencyl.com) output to a json format
 
