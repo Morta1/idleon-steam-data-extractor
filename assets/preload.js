@@ -1,5 +1,5 @@
 const { ipcRenderer, clipboard, shell } = require('electron');
-const { format } = require("date-fns");
+const { format } = require('date-fns');
 
 window.addEventListener('DOMContentLoaded', () => {
   const closeWindow = document.getElementById('close-window');
@@ -30,7 +30,9 @@ window.addEventListener('DOMContentLoaded', () => {
       const item = e.target.id === 'reset-source' ? 'custom-source-folder-path' : 'custom-target-folder-path';
       const data = e.target.id === 'reset-source' ? defaultSourcePath : defaultTargetPath;
       const previewEl = e.target.id === 'reset-source' ? sourcePathPreview : targetPathPreview;
-      const checkboxEl = document.getElementById(e.target.id === 'reset-source' ? 'custom-source-path' : 'custom-target-path');
+      const checkboxEl = document.getElementById(e.target.id === 'reset-source'
+        ? 'custom-source-path'
+        : 'custom-target-path');
       const folderPathElement = e.target.id === 'reset-source' ? customSourceFolderPath : customTargetFolderPath;
       setLocalStorageItem(item, data);
       previewEl.value = data;
@@ -42,7 +44,9 @@ window.addEventListener('DOMContentLoaded', () => {
   const customFolderPaths = document.querySelectorAll('#custom-source-folder-path, #custom-target-folder-path');
   [...customFolderPaths].forEach(function (item) {
     item.addEventListener('click', async (e) => {
-      const path = await ipcRenderer.invoke('open-folder', e.target.id === 'custom-source-folder-path' ? 'source' : 'target');
+      const path = await ipcRenderer.invoke('open-folder', e.target.id === 'custom-source-folder-path'
+        ? 'source'
+        : 'target');
       const previewEl = e.target.id === 'custom-source-folder-path' ? sourcePathPreview : targetPathPreview;
       previewEl.value = path;
       setLocalStorageItem(e.target.id, path);
@@ -55,14 +59,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
   [...customCheckboxPaths].forEach((item) => {
     item.addEventListener('change', function (e) {
-      const folderPathElement = e.target.id === "custom-source-path" ? customSourceFolderPath : customTargetFolderPath;
+      const folderPathElement = e.target.id === 'custom-source-path' ? customSourceFolderPath : customTargetFolderPath;
       folderPathElement.style.display = e.target.checked ? 'block' : 'none';
     });
   });
 
   const runButton = document.getElementById('run-button');
   const result = document.getElementById('result');
-  const json = document.getElementById('json');
   const checkIcon = document.getElementById('check-icon');
   const currentUpdateTime = document.getElementById('current-update-time');
 
@@ -74,15 +77,19 @@ window.addEventListener('DOMContentLoaded', () => {
       title: 'Idleon Steam Data Extractor'
     });
     if (response === 0) {
-      const string = await ipcRenderer.invoke('run-process');
+      const filePath = await ipcRenderer.invoke('run-process');
+      const response = await fetch(`file://${filePath}`);
+      const string = await response.json();
       const hexHash = await digestMessage(JSON.stringify(string));
       const lastHash = getLocalStorageItem('hash');
       const lastUpdate = getLocalStorageItem('lastUpdate');
       if (string) {
-        json.innerHTML = JSON.stringify(string);
         result.style.display = 'inline-block';
         checkIcon.style.display = 'inline-block'
-        currentUpdateTime.innerHTML = hexHash !== lastHash ? 'Updated' : `Old Data - Last Update Date: ${formatDate(lastUpdate)}`;
+        currentUpdateTime.innerHTML = hexHash !== lastHash
+          ? 'Updated'
+          : `Old Data - Last Update Date: ${formatDate(lastUpdate)}`;
+        debugger
         if (hexHash !== lastHash) {
           setLocalStorageItem('hash', hexHash);
           setLocalStorageItem('lastUpdate', new Date().getTime());
@@ -95,30 +102,28 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   const copy = document.getElementById('copy-to-clipboard');
-  copy.addEventListener('click', () => {
-    clipboard.writeText(json.value);
+  copy.addEventListener('click', async () => {
+    const response = await fetch(`file://${targetPathPreview.value}/user-data.json`);
+    const string = await response.json();
+    clipboard.writeText(JSON.stringify(string));
   })
 
   const idleonToolbox = document.getElementById('idleon-toolbox');
   idleonToolbox?.addEventListener('click', (e) => {
     e.preventDefault();
-    shell.openExternal("https://idleontoolbox.com")
+    shell.openExternal('https://idleontoolbox.com')
   })
 
   const idleonToolboxRepository = document.getElementById('idleon-toolbox-repository');
   idleonToolboxRepository?.addEventListener('click', (e) => {
     e.preventDefault();
-    shell.openExternal("https://github.com/Morta1/idleon-steam-data-extractor")
+    shell.openExternal('https://github.com/Morta1/idleon-steam-data-extractor')
   })
 })
 
 const digestMessage = async (message) => {
-  const msgUint8 = new TextEncoder().encode(message);                           // encode as (utf-8) Uint8Array
-  const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);           // hash the message
-  const hashArray = Array.from(new Uint8Array(hashBuffer));                     // convert buffer to byte array
-  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
-  console.log(hashHex);
-  return hashHex;
+  const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(message));
+  return Array.from(new Uint8Array(hashBuffer), (b) => b.toString(16).padStart(2, '0')).join('');
 }
 
 const formatDate = (ms) => {

@@ -1,5 +1,6 @@
 const path = require("path");
 const exec = require('child_process').exec;
+const fs = require('fs');
 const { app, BrowserWindow, ipcMain, dialog } = require('electron')
 const { createReadStream } = require("./utils");
 const log = require('electron-log');
@@ -73,7 +74,19 @@ ipcMain.handle('run-process', async () => {
     if (!copied) return null;
     const dataAsArray = await createReadStream(targetFolderPath, {});
     if (dataAsArray.length) {
-      return await getUserData(dataAsArray);
+      const userData = await getUserData(dataAsArray);
+      const filePath = path.join(targetFolderPath, 'user-data.json'); // Define a file inside the directory
+      const idleonToolboxJson = {
+        data: userData,
+        charNames: userData.GetPlayersUsernames,
+        companion: {},
+        guildData: {},
+        serverVars: {},
+        accountCreateTime: new Date().getTime(),
+        lastUpdated: new Date().getTime()
+      }
+      fs.writeFileSync(filePath, JSON.stringify(idleonToolboxJson));
+      return filePath;
     } else {
       return null;
     }

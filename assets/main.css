@@ -103,16 +103,10 @@ section .run {
 #result {
   display: none;
   position: relative;
-  width: max-content;
 }
 
-#result #copy-to-clipboard {
-  position: absolute;
-  right: 0;
-}
 
 #result textarea {
-  /*padding: 20px 5px 5px 5px;*/
   resize: none;
   height: 20px;
   width: 400px;
