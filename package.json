@@ -1,6 +1,6 @@
 {
   "name": "idleon-steam-data-extractor",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "An app to extract idleon data from steam",
   "main": "index.js",
   "productName": "idleon-steam-data-extractor",
