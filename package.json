@@ -6,7 +6,7 @@
   "productName": "idleon-steam-data-extractor",
   "scripts": {
     "start": "electron index.js",
-    "release": "npm version patch && ./release.sh",
+    "release": "npm version patch && bash release.sh",
     "pack": "electron-builder --dir",
     "dist": "electron-builder --win=portable"
   },
