@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 
 :: Read version from package.json
-for /f "delims=" %%v in ('node -p "require('./package.json').version"') do set VERSION=%%v
+for /f "delims=" %%v in ('node -p "require(\'./package.json\').version"') do set VERSION=%%v
 set RELEASE_NOTES=Automated release of version %VERSION%
 set ARTIFACT=dist\idleon-steam-data-extractor.exe
 
